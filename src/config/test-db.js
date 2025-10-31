@@ -1,7 +1,7 @@
 const path = require('path');
 
 // ✅ Cargar variables de entorno desde la raíz del proyecto (lukia2F/.env)
-const envPath = path.resolve(__dirname, '../../../.env');
+const envPath = path.resolve(__dirname, '../../.env');
 const result = require('dotenv').config({ path: envPath });
 
 if (result.error) {
