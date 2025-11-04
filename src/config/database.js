@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+require("dotenv").config();
 
 const sslRequired = String(process.env.PGSSLMODE || '').toLowerCase() === 'require';
 
