@@ -3,18 +3,27 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const sequelize = require('./config/database');
+const cron = require('node-cron'); // 👈 AÑADIDO DE BLOQUE 1
+
+// --- Modelos ---
 const User = require('./models/User');
+
+// --- Servicios ---
+// (Uso el path que diste en el BLOQUE 1)
+const { updateCryptos } = require('./services/cryptosUpdate.service'); // 👈 AÑADIDO DE BLOQUE 1
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-  secret: 'mi-secreto',
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+  session({
+    secret: 'mi-secreto',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // Configuración de vistas
 app.set('view engine', 'ejs');
@@ -22,34 +31,43 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Conexión y sincronización de BD
-sequelize.sync({ alter: true })
-  .then(() => console.log('✅ Base de datos sincronizada correctamente'))
-  .catch(err => console.error('❌ Error al sincronizar BD:', err));
+sequelize
+  .sync({ alter: true })
+  .then(() => {
+    console.log('✅ Base de datos sincronizada correctamente');
+
+    // --- LÓGICA DE CRON AÑADIDA DE BLOQUE 1 ---
+    // Actualiza al iniciar
+    updateCryptos();
+
+    // Programa cada 12 horas
+    cron.schedule('0 */12 * * *', async () => {
+      await updateCryptos();
+    });
+    // --- FIN DE LÓGICA AÑADIDA ---
+  })
+  .catch((err) => console.error('❌ Error al sincronizar BD:', err));
 
 // Ruta para registrar usuario
 app.post('/api/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password } = req.body; // Validar campos
 
-    // Validar campos
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Todos los campos son requeridos' });
-    }
+    } // Verificar si ya existe el usuario
 
-    // Verificar si ya existe el usuario
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: 'El usuario ya existe' });
-    }
+    } // Encriptar contraseña
 
-    // Encriptar contraseña
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10); // Crear usuario
 
-    // Crear usuario
     const newUser = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     res.status(201).json({
@@ -57,8 +75,8 @@ app.post('/api/register', async (req, res) => {
       user: {
         id: newUser.user_id,
         name: newUser.name,
-        email: newUser.email
-      }
+        email: newUser.email,
+      },
     });
   } catch (error) {
     console.error('⚠️ Error al registrar usuario:', error);
@@ -68,7 +86,6 @@ app.post('/api/register', async (req, res) => {
 
 const userRoutes = require('./routes/users.routes');
 app.use('/api/users', userRoutes);
-
 
 // Ruta principal
 const indexRouter = require('./routes/index');
