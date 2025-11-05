@@ -10,10 +10,12 @@
     th, td { padding:10px 12px; text-align:left; border-bottom:1px solid rgba(148,163,184,.06); }
     th { color:#9aa3b2; font-weight:600; font-size:13px; }
     a.btn, button.btn { display:inline-block; padding:8px 12px; border-radius:8px; text-decoration:none; color:#fff; background:linear-gradient(90deg,#3a6ff8,#0dcaf0); border:none; cursor:pointer; }
-    a.secondary { background:transparent; color:#9aa3b2; border:1px solid rgba(148,163,184,.06); }
+    a.secondary { background:transparent; color:#9aa3b2; border:1px solid rgba(148,163,184,.06); transition: all 0.2s ease; }
+    a.secondary:hover { background: rgba(255,255,255,0.05); color: #fff; }
     .actions { display:flex; gap:8px; }
     .small-muted { color:#9aa3b2; font-size:13px; }
     .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .icon { margin-right:6px; }
   </style>
 </head>
 <body>
@@ -25,6 +27,12 @@
       </div>
 
       <div>
+        <!-- 🔙 Botón para volver al index -->
+        <a href="/" class="btn secondary" style="margin-right:8px;">
+          ← Volver al inicio
+        </a>
+
+        <!-- 🟢 Botón existente -->
         <a href="/users/create" class="btn">Crear usuario</a>
       </div>
     </div>
