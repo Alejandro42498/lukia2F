@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalles del usuario | Lukia2</title>
+  <style>
+    body { font-family:Poppins,sans-serif; background:#0b1221; color:#e3e8ef; padding:40px; margin:0; }
+    .card { background:#141b2d; border:1px solid #1e2a47; border-radius:12px; width:400px; margin:auto; padding:20px; }
+    h2 { color:#3a6ff8; }
+    .field { margin-bottom:10px; }
+    label { font-weight:600; color:#9aa3b2; display:block; }
+    .value { background:#0f1628; padding:10px; border-radius:8px; margin-top:5px; }
+    a { color:#3a6ff8; text-decoration:none; display:inline-block; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Detalles del usuario</h2>
+
+    <div class="field">
+      <label>Nombre:</label>
+      <div class="value"><%= user.name %></div>
+    </div>
+
+    <div class="field">
+      <label>Correo:</label>
+      <div class="value"><%= user.email %></div>
+    </div>
+
+    <div class="field">
+      <label>Rol:</label>
+      <div class="value"><%= user.role %></div>
+    </div>
+
+    <a href="/users">⬅ Volver a la lista</a>
+  </div>
+</body>
+</html>

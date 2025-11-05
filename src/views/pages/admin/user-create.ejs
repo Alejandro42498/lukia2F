@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Crear usuario | Lukia2</title>
+  <style>
+    body { 
+      font-family: Poppins, sans-serif; 
+      background: #0b1221; 
+      color: #e3e8ef; 
+      margin: 0; 
+      padding: 28px; 
+    }
+    .card { 
+      width: 420px; 
+      margin: auto; 
+      background: #141b2d; 
+      padding: 22px; 
+      border-radius: 12px; 
+      border: 1px solid #1e2a47; 
+    }
+    label { 
+      display: block; 
+      margin-bottom: 6px; 
+      color: #9aa3b2; 
+      font-weight: 600; 
+    }
+    input, select { 
+      width: 100%; 
+      padding: 10px; 
+      border-radius: 8px; 
+      border: 1px solid #2b3553; 
+      background: #0f1628; 
+      color: #e3e8ef; 
+      margin-bottom: 12px; 
+    }
+    button { 
+      padding: 10px 14px; 
+      border-radius: 8px; 
+      border: none; 
+      cursor: pointer; 
+      color: #fff; 
+      background: linear-gradient(90deg,#3a6ff8,#0dcaf0); 
+    }
+    a { 
+      color: #9aa3b2; 
+      text-decoration: none; 
+      margin-left: 8px; 
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin-top:0">Crear usuario</h2>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div style="background:#ff4c4c1a;padding:8px;border-radius:8px;color:#ff6666;margin-bottom:12px;">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <!-- 🔧 Ruta corregida -->
+    <form action="/users/create" method="POST">
+      <label for="name">Nombre</label>
+      <input id="name" name="name" type="text" required>
+
+      <label for="email">Correo</label>
+      <input id="email" name="email" type="email" required>
+
+      <label for="password">Contraseña</label>
+      <input id="password" name="password" type="password" required>
+
+      <label for="role">Rol</label>
+      <select id="role" name="role">
+        <option value="user">Usuario</option>
+        <option value="admin">Administrador</option>
+      </select>
+
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <a href="/users" class="secondary" style="color:#9aa3b2; align-self:center;">Cancelar</a>
+        <button type="submit">Crear</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
