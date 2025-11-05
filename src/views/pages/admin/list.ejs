@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Usuarios | Lukia2</title>
+  <style>
+    body { font-family: Poppins, sans-serif; background:#0b1221; color:#e3e8ef; margin:0; padding:24px; }
+    .card { background:#141b2d; padding:18px; border-radius:12px; border:1px solid #1e2a47; box-shadow:0 6px 20px rgba(0,0,0,.5); }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th, td { padding:10px 12px; text-align:left; border-bottom:1px solid rgba(148,163,184,.06); }
+    th { color:#9aa3b2; font-weight:600; font-size:13px; }
+    a.btn, button.btn { display:inline-block; padding:8px 12px; border-radius:8px; text-decoration:none; color:#fff; background:linear-gradient(90deg,#3a6ff8,#0dcaf0); border:none; cursor:pointer; }
+    a.secondary { background:transparent; color:#9aa3b2; border:1px solid rgba(148,163,184,.06); }
+    .actions { display:flex; gap:8px; }
+    .small-muted { color:#9aa3b2; font-size:13px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="topbar">
+      <div>
+        <div style="font-weight:800; font-size:18px;">Gestión de usuarios</div>
+        <div class="small-muted">Administra cuentas de la aplicación</div>
+      </div>
+
+      <div>
+        <a href="/users/create" class="btn">Crear usuario</a>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!users || users.length === 0) { %>
+          <tr><td colspan="4" class="small-muted">No hay usuarios</td></tr>
+        <% } else { %>
+          <% users.forEach(u => { %>
+            <tr>
+              <td><%= u.name %></td>
+              <td><%= u.email %></td>
+              <td><%= u.role %></td>
+              <td>
+                <div class="actions">
+                  <!-- ✅ Ver detalle -->
+                  <a href="/users/view/<%= u.user_id %>" class="secondary">Ver</a>
+
+                  <!-- ✅ Editar -->
+                  <a href="/users/edit/<%= u.user_id %>" class="btn" style="background:linear-gradient(90deg,#5563de,#3a6ff8)">Editar</a>
+
+                  <!-- ✅ Eliminar -->
+                  <form action="/users/delete/<%= u.user_id %>" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar usuario <%= u.name %>?');">
+                    <button class="secondary" type="submit" style="background:transparent; color:#ff7a88; border:1px solid rgba(255,122,136,.12)">Eliminar</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
