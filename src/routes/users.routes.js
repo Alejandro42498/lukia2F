@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
-
 // 🟢 LOGIN DE USUARIO (para vista) → debe ir antes de "/:id"
 router.post('/login', async (req, res) => {
   try {
@@ -18,19 +17,43 @@ router.post('/login', async (req, res) => {
       return res.render('pages/login', { error: 'Usuario no encontrado' });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    // Soportar usuarios antiguos con contraseña en texto plano en la BD.
+    const stored = user.password || '';
+    let validPassword = false;
+
+    try {
+      if (stored.startsWith('$2')) {
+        // Contraseña ya hasheada con bcrypt
+        validPassword = await bcrypt.compare(password, stored);
+      } else {
+        // Legacy: contraseña en texto plano
+        validPassword = password === stored;
+        if (validPassword) {
+          // Migrar a hash para seguridad
+          user.password = await bcrypt.hash(password, 10);
+          await user.save();
+          console.log(`Usuario ${user.email} migrado a contraseña hasheada`);
+        }
+      }
+    } catch (err) {
+      console.error('Error comprobando contraseña:', err);
+      return res.status(500).render('pages/login', { error: 'Error en el servidor' });
+    }
+
     if (!validPassword) {
       return res.render('pages/login', { error: 'Contraseña incorrecta' });
     }
 
-    // Guardar sesión
+    // Guardar sesión (normalizar user y userId para compatibilidad)
     req.session.user = {
       id: user.user_id,
       name: user.name,
-      role: user.role
+      role: user.role,
     };
+  req.session.userId = user.user_id;
 
-    res.redirect('/');
+  // Después de iniciar sesión, llevar al usuario al dashboard
+  res.redirect('/dashboard');
   } catch (error) {
     console.error('❌ Error al iniciar sesión:', error);
     res.status(500).render('pages/login', { error: 'Error en el servidor' });
@@ -62,7 +85,7 @@ router.post('/', async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || 'user'
+      role: role || 'user',
     });
 
     if (req.headers.accept && req.headers.accept.includes('text/html')) {
@@ -116,7 +139,7 @@ router.post('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ['user_id', 'name', 'email', 'role']
+      attributes: ['user_id', 'name', 'email', 'role'],
     });
 
     if (req.headers.accept && req.headers.accept.includes('text/html')) {
