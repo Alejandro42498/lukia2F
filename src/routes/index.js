@@ -6,12 +6,13 @@ const marketService = require('../services/market.service');
 router.get('/', async (req, res) => {
   try {
     const market = await marketService.getMarketWithCharts();
+
     res.render('pages/index', {
       market,
       charts: market.charts,
       updatedAt: market.fetchedAt,
       error: null,
-      user: req.session.user || null  // ✅ aquí pasamos el usuario logueado
+      user: req.session.user || null // ✅ se pasa el usuario a la vista
     });
   } catch (err) {
     console.error('Error fetching market data:', err?.message || err);
@@ -20,7 +21,7 @@ router.get('/', async (req, res) => {
       charts: null,
       updatedAt: null,
       error: 'No se pudo obtener datos de mercado',
-      user: req.session.user || null  // también aquí
+      user: req.session.user || null // ✅ también aquí, por si falla
     });
   }
 });
@@ -32,7 +33,7 @@ router.get('/api/market', async (req, res) => {
     res.json({
       ok: true,
       market,
-      charts: market.charts
+      charts: market.charts,
     });
   } catch (err) {
     res.status(500).json({ ok: false, error: 'No se pudo obtener datos' });

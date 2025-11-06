@@ -3,7 +3,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const sequelize = require('./config/database');
-const cron = require('node-cron'); 
+const cron = require('node-cron');
 
 // --- Modelos ---
 const User = require('./models/User');
@@ -33,11 +33,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 const viewRoutes = require('./routes/views.routes');
 const userRoutes = require('./routes/users.routes');
 const indexRouter = require('./routes/index');
+const dashboardRoutes = require('./routes/dashboard.routes');
+const tradesRoutes = require('./routes/trades.routes');
 
 // ✅ Usa las rutas después de configurar sesión
 app.use('/', viewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/', indexRouter);
+// Rutas adicionales
+app.use('/dashboard', dashboardRoutes);
+app.use('/api/trades', tradesRoutes);
 
 const authRoutes = require('./routes/auth.routes');
 app.use('/', authRoutes);

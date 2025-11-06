@@ -116,4 +116,17 @@ router.post('/users/delete/:id', async (req, res) => {
   }
 });
 
+// 🔹 Cerrar sesión
+router.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Error al cerrar sesión:', err);
+      return res.redirect('/'); // Vuelve al inicio si algo falla
+    }
+    res.clearCookie('connect.sid'); // Borra la cookie de sesión
+    res.redirect('/'); // Redirige al index
+  });
+});
+
+
 module.exports = router;

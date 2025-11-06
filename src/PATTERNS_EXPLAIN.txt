@@ -1,0 +1,52 @@
+PATTERNS INTEGRATION - Archivo explicativo
+=========================================
+
+He integrado los cuatro patrones de diseño solicitados en archivos dentro de `src/` (sin crear
+una carpeta 'patterns'). Aquí tienes qué hace cada uno, en qué archivo está y una breve y una
+explicación normal para cada patrón.
+
+1) Singleton - Logger
+   - Archivo: src/logger.js
+   - Líneas (aprox): 1 - 200 (archivo corto)
+   - Explicación breve: Un logger compartido (misma instancia) para toda la app.
+   - Explicación normal: `getLogger()` devuelve siempre la misma instancia de `Logger`. Usarlo
+     evita múltiples implementaciones de logging y centraliza el nivel/formatos de salida.
+
+2) Observer - Crypto updates
+   - Archivo: src/cryptoEvents.js
+   - Líneas (aprox): 1 - 200
+   - Explicación breve: Sujeto para notificar actualizaciones de cryptos a suscriptores.
+   - Explicación normal: `cryptoUpdates` exporta un Subject con `subscribe(fn)`, `unsubscribe(fn)` y
+     `notify(data)`. Otros módulos pueden registrarse para recibir notificaciones cuando
+     se actualicen los datos de mercado.
+
+3) Factory Method - Market service factory
+   - Archivo: src/marketFactory.js
+   - Líneas (aprox): 1 - 200
+   - Explicación breve: Devuelve el servicio de mercado real o un mock según `MARKET_SERVICE`.
+   - Explicación normal: Llamar `createMarketService('mock')` devuelve una implementación de
+     `getMarketWithCharts` con datos de prueba; por defecto devuelve `require('./services/market.service')`.
+     Importante: NO se modificó `src/services/market.service.js` para que esto funcione.
+
+4) Strategy - Fee calculation
+   - Archivo: src/feeStrategies.js
+   - Líneas (aprox): 1 - 200
+   - Explicación breve: Diferentes estrategias para calcular comisiones (porcentaje o fija).
+   - Explicación normal: Exporta `PercentageFeeStrategy`, `FlatFeeStrategy` y `FeeContext`.
+     Instancia un `FeeContext` con la estrategia deseada y llama `calculate(amount)` para obtener
+     la comisión. Facilita cambiar la política de fees sin tocar la lógica de transacciones.
+
+Notas adicionales:
+- No se modificó `src/services/market.service.js` ni se cambiaron las rutas que lo usan. Si
+  quieres que `routes/index.js` use la factory en vez del servicio directo, puedo hacerlo a petición.
+- Para usar cada patrón:
+  - Logger: `const { getLogger } = require('./logger'); const logger = getLogger(); logger.info('...');`
+  - Observer: `const { cryptoUpdates } = require('./cryptoEvents'); cryptoUpdates.subscribe(data => ...);`
+  - Factory: `const { createMarketService } = require('./marketFactory'); const svc = createMarketService(); await svc.getMarketWithCharts();`
+  - Strategy: `const { PercentageFeeStrategy, FeeContext } = require('./feeStrategies'); const fee = new FeeContext(new PercentageFeeStrategy(0.005)); fee.calculate(amount);`
+
+Si quieres, puedo ahora:
+- Añadir comentarios en archivos donde ya haya lógica relacionada (por ejemplo `cryptosUpdate.service.js`) que muestren cómo suscribirse a `cryptoUpdates` sin alterar `market.service`.
+- Integrar Logger y Strategy en las rutas de transacciones (solo si confirmas que quieres que lo haga).
+
+Fin del archivo.
