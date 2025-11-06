@@ -1,140 +1,302 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 1200px; margin: auto; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 20px;}
-        .card { background-color: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1, h2 { color: #0056b3; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        button:hover { background-color: #0056b3; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #e9ecef; }
-        tr:nth-child(even) { background-color: #f8f9fa; }
-        .full-width { grid-column: 1 / -1; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Lukia2</title>
+  <style>
+    :root {
+      --bg-dark: #0b1221;
+      --bg-card: #141b2d;
+      --accent-blue: #3a6ff8;
+      --accent-cyan: #0dcaf0;
+      --text-light: #e3e8ef;
+      --text-muted: #9aa3b2;
+      --border-soft: rgba(148, 163, 184, 0.06);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: linear-gradient(135deg, var(--bg-dark), #0f1730);
+      color: var(--text-light);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+    }
+
+    .full-width { grid-column: 1 / -1; }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      padding: 22px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 0 15px rgba(13, 202, 240, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    /* 🔙 Botón de volver */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, rgba(58,111,248,0.15), rgba(13,202,240,0.15));
+      color: var(--text-light);
+      border: 1px solid rgba(58,111,248,0.3);
+      border-radius: 8px;
+      padding: 8px 14px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      transition: transform 0.2s ease;
+    }
+
+    .back-btn:hover svg {
+      transform: translateX(-3px);
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      color: #fff;
+      box-shadow: 0 0 10px rgba(13,202,240,0.4);
+    }
+
+    .saldo {
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 0 15px rgba(13, 202, 240, 0.5);
+    }
+
+    h1, h2 {
+      color: var(--accent-cyan);
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      background: #0f1730;
+      color: var(--text-light);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      box-shadow: 0 0 15px rgba(13, 202, 240, 0.5);
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="full-width" style="display:flex;align-items:center;justify-content:space-between;">
-            <h1 style="margin:0;">Dashboard de <%= user.name || 'Usuario' %></h1>
-            <div style="background:#007bff;color:#fff;padding:8px 14px;border-radius:20px;font-weight:600;">
-                Saldo: $<%= (typeof balance !== 'undefined' ? parseFloat(balance).toFixed(2) : '0.00') %>
-            </div>
-        </div>
 
-        <div class="card">
-            <h2>Mi Portafolio</h2>
-            <% if (typeof balance !== 'undefined') { %>
-                <p><strong>Balance disponible (USD):</strong></p>
-                <h3>$<%= parseFloat(balance).toFixed(2) %></h3>
-                <p><strong>Valor total del portafolio (balance + cripto):</strong></p>
-                <h3>$<%= parseFloat(totalPortfolioValue).toFixed(2) %></h3>
-            <% } else { %>
-                <p>Aún no tienes un portafolio. Realiza una compra para empezar.</p>
-            <% } %>
-        </div>
+  <div class="container">
 
-        <div class="card">
-            <h2>Mis Criptomonedas</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Criptomoneda</th>
-                        <th>Cantidad</th>
-                        <th>Precio actual (USD)</th>
-                        <th>Valor total (USD)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (holdings && holdings.length > 0) { %>
-                        <% holdings.forEach(h => { %>
-                            <tr>
-                                <td><%= h.name ? h.name + ' (' + h.symbol + ')' : h.symbol %></td>
-                                <td><%= parseFloat(h.quantity).toLocaleString(undefined, {maximumFractionDigits:6}) %></td>
-                                <td>$<%= parseFloat(h.price).toFixed(2) %></td>
-                                <td>$<%= parseFloat(h.value).toFixed(2) %></td>
-                            </tr>
-                        <% }); %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="4" style="text-align:center;">No tienes criptomonedas en tu portafolio.</td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
+    <!-- 🔹 Top bar -->
+    <div class="full-width topbar">
+      <a href="/" class="back-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Volver al inicio
+      </a>
 
-        <div class="card">
-            <h2>Realizar Transacción</h2>
-            <form action="/dashboard/transaction" method="POST">
-                <div class="form-group">
-                    <label for="crypto_symbol">Criptomoneda</label>
-                    <select name="crypto_symbol" id="crypto_symbol" required>
-                        <% if (cryptos && cryptos.length > 0) { %>
-                            <% cryptos.forEach(crypto => { %>
-                                <option value="<%= crypto.symbol %>"><%= crypto.name %> (<%= crypto.symbol %>) - $<%= parseFloat(crypto.current_price).toFixed(2) %></option>
-                            <% }); %>
-                        <% } else { %>
-                            <option disabled>No hay criptomonedas disponibles</option>
-                        <% } %>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Cantidad</label>
-                    <input type="number" name="amount" id="amount" step="0.000001" min="0" required placeholder="Ej: 0.5">
-                </div>
-                <div class="form-group">
-                    <label for="type">Tipo de Transacción</label>
-                    <select name="type" id="type">
-                        <option value="buy">Comprar</option>
-                        <option value="sell">Vender</option>
-                    </select>
-                </div>
-                <button type="submit">Ejecutar Transacción</button>
-            </form>
-        </div>
-
-        <div class="card full-width">
-            <h2>Historial de Transacciones</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Cripto</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario (USD)</th>
-                        <th>Total (USD)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (transactions.length > 0) { %>
-                        <% transactions.forEach(tx => { %>
-                            <tr>
-                                <td><%= new Date(tx.date).toLocaleString() %></td>
-                                <td><%= tx.type.toUpperCase() %></td>
-                                <td><%= tx.cryptocurrency ? tx.cryptocurrency.symbol : 'N/A' %></td>
-                                <td><%= parseFloat(tx.amount) %></td>
-                                <td>$<%= parseFloat(tx.price).toFixed(2) %></td>
-                                <td>$<%= (parseFloat(tx.amount) * parseFloat(tx.price)).toFixed(2) %></td>
-                            </tr>
-                        <% }); %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="6" style="text-align: center;">No hay transacciones todavía.</td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
+      <div class="saldo">
+        💰 Saldo: $<%= (typeof balance !== 'undefined' ? parseFloat(balance).toFixed(2) : '0.00') %>
+      </div>
     </div>
+
+    <!-- 💰 Portafolio -->
+    <div class="card">
+      <h2>Mi Portafolio</h2>
+      <% if (typeof balance !== 'undefined') { %>
+        <p><strong>Balance disponible (USD):</strong></p>
+        <h3>$<%= parseFloat(balance).toFixed(2) %></h3>
+        <p><strong>Valor total del portafolio (balance + cripto):</strong></p>
+        <h3>$<%= parseFloat(totalPortfolioValue).toFixed(2) %></h3>
+      <% } else { %>
+        <p>Aún no tienes un portafolio. Realiza una compra para empezar.</p>
+      <% } %>
+    </div>
+
+    <!-- 💎 Criptomonedas -->
+    <div class="card">
+      <h2>Mis Criptomonedas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Criptomoneda</th>
+            <th>Cantidad</th>
+            <th>Precio actual (USD)</th>
+            <th>Valor total (USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (holdings && holdings.length > 0) { %>
+            <% holdings.forEach(h => { %>
+              <tr>
+                <td><%= h.name ? h.name + ' (' + h.symbol + ')' : h.symbol %></td>
+                <td><%= parseFloat(h.quantity).toLocaleString(undefined, {maximumFractionDigits:6}) %></td>
+                <td>$<%= parseFloat(h.price).toFixed(2) %></td>
+                <td>$<%= parseFloat(h.value).toFixed(2) %></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr><td colspan="4" style="text-align:center;">No tienes criptomonedas en tu portafolio.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ⚡ Realizar Transacción -->
+    <div class="card">
+      <h2>Realizar Transacción</h2>
+      <form action="/dashboard/transaction" method="POST">
+        <div class="form-group">
+          <label for="crypto_symbol">Criptomoneda</label>
+          <select name="crypto_symbol" id="crypto_symbol" required>
+            <% if (cryptos && cryptos.length > 0) { %>
+              <% cryptos.forEach(crypto => { %>
+                <option value="<%= crypto.symbol %>"><%= crypto.name %> (<%= crypto.symbol %>) - $<%= parseFloat(crypto.current_price).toFixed(2) %></option>
+              <% }); %>
+            <% } else { %>
+              <option disabled>No hay criptomonedas disponibles</option>
+            <% } %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Cantidad</label>
+          <input type="number" name="amount" id="amount" step="0.000001" min="0" required placeholder="Ej: 0.5" />
+        </div>
+
+        <div class="form-group">
+          <label for="type">Tipo de Transacción</label>
+          <select name="type" id="type">
+            <option value="buy">Comprar</option>
+            <option value="sell">Vender</option>
+          </select>
+        </div>
+
+        <button type="submit">Ejecutar Transacción</button>
+      </form>
+    </div>
+
+    <!-- 📊 Historial -->
+    <div class="card full-width">
+      <h2>Historial de Transacciones</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Cripto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario (USD)</th>
+            <th>Total (USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (transactions.length > 0) { %>
+            <% transactions.forEach(tx => { %>
+              <tr>
+                <td><%= new Date(tx.date).toLocaleString() %></td>
+                <td><%= tx.type.toUpperCase() %></td>
+                <td><%= tx.cryptocurrency ? tx.cryptocurrency.symbol : 'N/A' %></td>
+                <td><%= parseFloat(tx.amount) %></td>
+                <td>$<%= parseFloat(tx.price).toFixed(2) %></td>
+                <td>$<%= (parseFloat(tx.amount) * parseFloat(tx.price)).toFixed(2) %></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr><td colspan="6" style="text-align:center;">No hay transacciones todavía.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 </body>
 </html>

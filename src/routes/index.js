@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
       charts: market.charts,
       updatedAt: market.fetchedAt,
       error: null,
+      user: req.session.user || null  
     });
   } catch (err) {
     console.error('Error fetching market data:', err?.message || err);
@@ -19,6 +20,7 @@ router.get('/', async (req, res) => {
       charts: null,
       updatedAt: null,
       error: 'No se pudo obtener datos de mercado',
+      user: req.session.user || null
     });
   }
 });
@@ -36,5 +38,7 @@ router.get('/api/market', async (req, res) => {
     res.status(500).json({ ok: false, error: 'No se pudo obtener datos' });
   }
 });
+
+
 
 module.exports = router;

@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
   req.session.userId = user.user_id;
 
   // Después de iniciar sesión, llevar al usuario al dashboard
-  res.redirect('/dashboard');
+  res.redirect('/');
   } catch (error) {
     console.error('❌ Error al iniciar sesión:', error);
     res.status(500).render('pages/login', { error: 'Error en el servidor' });

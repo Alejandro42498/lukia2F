@@ -59,19 +59,44 @@
 
     <!-- 🔹 Header con botón de inicio de sesión -->
     <div class="d-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 m-0 brand">Lukia2</h1>
+  <h1 class="h3 m-0 brand">Lukia2</h1>
 
-      <div class="d-flex align-items-center gap-3">
-        <div class="text-end me-2">
-          <div class="small sub">Última actualización</div>
-          <div class="small" id="last-updated"><%= updatedAt ? new Date(updatedAt).toLocaleString() : '—' %></div>
-        </div>
-
-        <a href="/login" class="btn btn-outline-light btn-sm px-3">
-          <i class="bi bi-person-circle me-1"></i> Iniciar sesión
-        </a>
-      </div>
+  <div class="d-flex align-items-center gap-3">
+    <div class="text-end me-2">
+      <div class="small sub">Última actualización</div>
+      <div class="small" id="last-updated"><%= updatedAt ? new Date(updatedAt).toLocaleString() : '—' %></div>
     </div>
+
+    <!-- 🔹 Botones según tipo de usuario -->
+    <% if (user) { %>
+      <% if (user.role === 'admin') { %>
+        <a href="/admin/historial" class="btn btn-outline-warning btn-sm px-3">
+          <i class="bi bi-clock-history me-1"></i> Historial Global
+        </a>
+      <% } else { %>
+        <a href="/dashboard" 
+          class="btn btn-sm px-3 text-white" 
+          style="background: linear-gradient(90deg, #3a6ff8, #0dcaf0); border: none; box-shadow: 0 2px 6px rgba(13, 202, 240, 0.3); transition: all 0.3s ease; transform: scale(1);"
+          onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 4px 12px rgba(13,202,240,0.5)';"
+          onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 6px rgba(13,202,240,0.3)';">
+          <i class="bi bi-speedometer2 me-1"></i> Mi Dashboard
+        </a>
+
+
+
+      <% } %>
+
+      <a href="/logout" class="btn btn-outline-light btn-sm px-3">
+        <i class="bi bi-box-arrow-right me-1"></i> Cerrar sesión
+      </a>
+    <% } else { %>
+      <a href="/login" class="btn btn-outline-light btn-sm px-3">
+        <i class="bi bi-person-circle me-1"></i> Iniciar sesión
+      </a>
+    <% } %>
+  </div>
+</div>
+
 
     <% if (error) { %>
       <div class="alert alert-danger"><%= error %></div>
