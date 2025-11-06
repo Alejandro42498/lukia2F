@@ -44,6 +44,9 @@ app.use('/', indexRouter);
 app.use('/dashboard', dashboardRoutes);
 app.use('/api/trades', tradesRoutes);
 
+const authRoutes = require('./routes/auth.routes');
+app.use('/', authRoutes);
+
 // 🔄 Sincronización BD y CRON
 sequelize
   .sync({ alter: true })

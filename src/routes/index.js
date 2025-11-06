@@ -10,22 +10,15 @@ router.get('/', async (req, res) => {
       market,
       charts: market.charts,
       updatedAt: market.fetchedAt,
-      error: null,
-      user: req.session.user || null  
+      error: null
     });
   } catch (err) {
     console.error('Error fetching market data:', err?.message || err);
-    res.render('pages/index', {
-      market: null,
-      charts: null,
-      updatedAt: null,
-      error: 'No se pudo obtener datos de mercado',
-      user: req.session.user || null
-    });
+    res.render('pages/index', { market: null, charts: null, updatedAt: null, error: 'No se pudo obtener datos de mercado' });
   }
 });
 
-// Endpoint para actualización vía fetch desde el front
+// Endpoint API (sin renderizar)
 router.get('/api/market', async (req, res) => {
   try {
     const market = await marketService.getMarketWithCharts();
