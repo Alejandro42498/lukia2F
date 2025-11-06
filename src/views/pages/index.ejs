@@ -67,9 +67,31 @@
           <div class="small" id="last-updated"><%= updatedAt ? new Date(updatedAt).toLocaleString() : '—' %></div>
         </div>
 
-        <a href="/login" class="btn btn-outline-light btn-sm px-3">
-          <i class="bi bi-person-circle me-1"></i> Iniciar sesión
+        <% if (!user) { %>
+  <!-- 🔹 Si NO hay sesión -->
+  <a href="/login" class="btn btn-outline-light btn-sm px-3">
+    <i class="bi bi-person-circle me-1"></i> Iniciar sesión
+  </a>
+
+    <% } else { %>
+      <!-- 🔹 Si hay sesión -->
+      <div class="d-flex align-items-center gap-2">
+        <span class="fw-semibold">
+          👋 Hola, <%= user.name %>
+        </span>
+
+        <% if (user.role === 'admin') { %>
+          <a href="/users" class="btn btn-warning btn-sm px-3">
+            <i class="bi bi-people-fill me-1"></i> Gestionar usuarios
+          </a>
+        <% } %>
+
+        <a href="/logout" class="btn btn-outline-danger btn-sm px-3">
+          <i class="bi bi-box-arrow-right me-1"></i> Cerrar sesión
         </a>
+      </div>
+    <% } %>
+
       </div>
     </div>
 
