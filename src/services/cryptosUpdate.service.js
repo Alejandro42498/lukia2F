@@ -1,10 +1,14 @@
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../config/database'); // 🔗 usa tu conexión existente
+const { getLogger } = require('../logger');
+const { cryptoUpdates } = require('../cryptoEvents');
+
+const logger = getLogger();
 
 const updateCryptos = async () => {
   try {
-    console.log('🔄 Iniciando actualización de criptomonedas...');
+    logger.info('🔄 Iniciando actualización de criptomonedas...');
 
     // 1️⃣ Obtener datos desde CoinGecko
     const response = await axios.get('https://api.coingecko.com/api/v3/coins/markets', {
@@ -45,9 +49,16 @@ const updateCryptos = async () => {
       });
     }
 
-    console.log('✅ Criptomonedas actualizadas correctamente');
+    logger.info('✅ Criptomonedas actualizadas correctamente');
+
+    // Notificar a los observers registrados (Observer pattern)
+    try {
+      cryptoUpdates.notify({ at: new Date().toISOString(), count: cryptos.length });
+    } catch (e) {
+      logger.error('Error notificando cryptoUpdates:', e);
+    }
   } catch (error) {
-    console.error('❌ Error actualizando criptomonedas:', error.message);
+    logger.error('❌ Error actualizando criptomonedas:', error.message);
   }
 };
 
