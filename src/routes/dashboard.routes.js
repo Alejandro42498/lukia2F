@@ -201,7 +201,7 @@ router.post('/ai', async (req, res) => {
 
     const rawOllama = process.env.OLLAMA_URL || 'http://localhost:11434';
     const OLLAMA_ENDPOINT = rawOllama.replace(/\/$/, '') + '/api/generate';
-    const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.2:1b';
+    const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3:8b';
 
     const payload = {
       model: OLLAMA_MODEL,
