@@ -55,7 +55,6 @@
       margin-bottom: 20px;
     }
 
-    /* 🔙 Botón de volver */
     .back-btn {
       display: inline-flex;
       align-items: center;
@@ -168,13 +167,136 @@
       from { opacity: 0; transform: translateY(5px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* --- ESTILOS DEL CHAT (TERMINAL) --- */
+    .ai-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .ai-input-container {
+      background: #0f1730;
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 12px;
+      transition: border-color 0.3s ease;
+      position: relative;
+    }
+
+    .ai-input-container:focus-within {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(58, 111, 248, 0.2);
+    }
+
+    .ai-textarea {
+      width: 100%;
+      min-height: 50px;
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      display: block;
+      margin-bottom: 35px;
+    }
+
+    .ai-toolbar {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-magic {
+      background: rgba(13, 202, 240, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(13, 202, 240, 0.3);
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      width: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-magic:hover {
+      background: rgba(13, 202, 240, 0.2);
+      box-shadow: 0 0 10px rgba(13, 202, 240, 0.2);
+    }
+
+    .btn-send {
+      background: linear-gradient(90deg, var(--accent-blue), #2563eb);
+      color: white;
+      padding: 6px 16px;
+      font-size: 13px;
+      border-radius: 6px;
+      width: auto;
+      border: none;
+    }
+
+    .btn-send:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-send:disabled, .btn-magic:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .ai-response-box {
+      background: rgba(20, 27, 45, 0.6);
+      border-left: 3px solid var(--accent-cyan);
+      border-radius: 0 8px 8px 0;
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #d1d5db;
+      min-height: 40px;
+      animation: slideIn 0.4s forwards;
+      display: none; /* Se muestra con JS */
+      white-space: pre-wrap; /* Respetar saltos de línea */
+    }
+
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 0;
+    }
+
+    .typing-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out both;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
 
-    <!-- 🔹 Top bar -->
     <div class="full-width topbar">
       <a href="/" class="back-btn">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
@@ -182,13 +304,15 @@
         </svg>
         Volver al inicio
       </a>
-
-      <div class="saldo">
-        💰 Saldo: $<%= (typeof balance !== 'undefined' ? parseFloat(balance).toFixed(2) : '0.00') %>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div class="saldo">
+          💰 Saldo: $<%= (typeof balance !== 'undefined' ? parseFloat(balance).toFixed(2) : '0.00') %>
+        </div>
+        <input id="rechargeAmount" type="number" step="0.01" placeholder="Monto USD" style="width:120px;padding:8px;border-radius:6px;background:#0f1730;border:1px solid rgba(148,163,184,0.06);color:#e3e8ef;" />
+        <button id="fakeRechargeTop" style="width:auto;padding:8px 12px;background:#2b6ef7;border-radius:8px;color:#fff;">Recargar</button>
       </div>
     </div>
 
-    <!-- 💰 Portafolio -->
     <div class="card">
       <h2>Mi Portafolio</h2>
       <% if (typeof balance !== 'undefined') { %>
@@ -201,7 +325,6 @@
       <% } %>
     </div>
 
-    <!-- 💎 Criptomonedas -->
     <div class="card">
       <h2>Mis Criptomonedas</h2>
       <table>
@@ -230,7 +353,56 @@
       </table>
     </div>
 
-    <!-- ⚡ Realizar Transacción -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin:0; display:flex; align-items:center; gap:8px;">
+          <span>🤖</span> Asesor Financiero IA
+        </h2>
+        <span style="font-size:12px; color:var(--text-muted); background:rgba(255,255,255,0.05); padding:4px 8px; border-radius:4px;">Powered by Llama 3.2</span>
+      </div>
+      
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:15px;">
+        Obtén análisis de mercado o recomendaciones personalizadas para tu portafolio.
+      </p>
+
+      <div class="ai-wrapper">
+        <div class="ai-input-container">
+          <textarea 
+            id="aiPrompt" 
+            class="ai-textarea" 
+            placeholder="Ej: ¿Debería vender Bitcoin ahora? o Analiza mi portafolio..."></textarea>
+          
+          <div class="ai-toolbar">
+            <button id="autoAI" class="btn-magic" title="Análisis automático de mi portafolio">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+              </svg>
+              Auto-Análisis
+            </button>
+
+            <button id="askAI" class="btn-send">
+              <span style="display:flex; align-items:center; gap:6px;">
+                Enviar 
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div id="aiLoading" style="display:none;">
+          <div class="typing-indicator">
+            <span style="font-size:13px; color:var(--text-muted); margin-right:8px;">Analizando mercado</span>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+
+        <div id="aiResult" class="ai-response-box">
+          </div>
+      </div>
+    </div>
+
     <div class="card">
       <h2>Realizar Transacción</h2>
       <form action="/dashboard/transaction" method="POST">
@@ -264,7 +436,6 @@
       </form>
     </div>
 
-    <!-- 📊 Historial -->
     <div class="card full-width">
       <h2>Historial de Transacciones</h2>
       <table>
@@ -296,7 +467,123 @@
         </tbody>
       </table>
     </div>
-
   </div>
+
+  <script>
+    // Función simple para recargas (no streaming)
+    async function postJSON(url, body) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
+
+    // --- 🧠 LÓGICA INTELIGENTE PARA LA IA (STREAMING PARSEADO) ---
+    async function handleAIStream(promptText) {
+      const aiLoading = document.getElementById('aiLoading');
+      const aiResult = document.getElementById('aiResult');
+      const askBtn = document.getElementById('askAI');
+      const autoBtn = document.getElementById('autoAI');
+
+      // 1. Reset UI
+      aiLoading.style.display = 'block';
+      aiResult.style.display = 'none'; 
+      aiResult.textContent = '';
+      askBtn.disabled = true;
+      if (autoBtn) autoBtn.disabled = true;
+
+      try {
+        const response = await fetch('/dashboard/ai-stream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: promptText })
+        });
+
+        if (!response.ok) throw new Error('Error de conexión');
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let isFirstChunk = true;
+
+        // 2. Leer el flujo
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Si es el primer paquete de datos que llega, mostramos la caja YA
+          if (isFirstChunk) {
+            aiLoading.style.display = 'none';
+            aiResult.style.display = 'block';
+            isFirstChunk = false;
+          }
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop(); // Guardar el trozo incompleto para después
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            try {
+              // ¡AQUÍ OCURRE LA MAGIA! Convertimos JSON a Texto
+              const json = JSON.parse(line);
+              if (json.message && json.message.content) {
+                aiResult.textContent += json.message.content;
+              }
+            } catch (e) {
+              // Si falla el parseo de una línea, la ignoramos silenciosamente
+              console.warn('Error parseando linea JSON', line);
+            }
+          }
+        }
+
+      } catch (e) {
+        aiLoading.style.display = 'none';
+        aiResult.style.display = 'block';
+        aiResult.textContent += '\n[Error: ' + e.message + ']';
+      } finally {
+        aiLoading.style.display = 'none';
+        askBtn.disabled = false;
+        if (autoBtn) autoBtn.disabled = false;
+      }
+    }
+
+    // Botón Enviar
+    document.getElementById('askAI').addEventListener('click', () => {
+      const txt = document.getElementById('aiPrompt').value.trim();
+      if (!txt) return alert('Escribe algo primero');
+      handleAIStream(txt);
+    });
+
+    // Botón Auto-Análisis
+    const autoBtn = document.getElementById('autoAI');
+    if (autoBtn) {
+      autoBtn.addEventListener('click', () => {
+        handleAIStream(''); // Prompt vacío = Auto análisis
+      });
+    }
+
+    // Recarga de saldo
+    const fakeRechargeHandler = async () => {
+      const amount = parseFloat(document.getElementById('rechargeAmount').value || 0);
+      if (!amount || amount <= 0) return alert('Monto inválido');
+      try {
+        const resp = await postJSON('/dashboard/recharge', { amount });
+        if (resp.ok) {
+          alert('Saldo actualizado: $' + parseFloat(resp.balance).toFixed(2));
+          window.location.reload();
+        } else {
+          alert('Error: ' + resp.error);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    };
+
+    const fakeTopBtn = document.getElementById('fakeRechargeTop');
+    if (fakeTopBtn) fakeTopBtn.addEventListener('click', fakeRechargeHandler);
+  </script>
 </body>
 </html>
